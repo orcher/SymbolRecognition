@@ -21,11 +21,12 @@ void main()
 		{ 0 }
 	};
 
-	std::vector<int> layersSizes = { 3, 1 };
+	std::vector<float> realCase = { 2, 2 };
 
-
+	std::vector<int> layersSizes = { 2, 1 };
 	nn::NeuralNetwork net(2, layersSizes);
 	net.learn(trainingSetsInputs, trainingSetsOutputs);
+	net.recognize(realCase);
 
 	getchar();
 }
