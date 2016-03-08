@@ -25,13 +25,13 @@ void nn::NeuralNetwork::learn(const std::vector<std::vector<float> > &trainingSe
 	float error = 0.0f;
 
 	// Calculate network output
-	std::vector<std::vector<float> > tmp;
-	for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
-		tmp.push_back(generateOutput(trainingSetsInputs[trainingSet]));
+	//std::vector<std::vector<float> > tmp;
+	//for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
+	//	tmp.push_back(generateOutput(trainingSetsInputs[trainingSet]));
 
-	// Calculate error
-	error = meanSquaredError(tmp, trainingSetsOutputs);
-	std::cout << std::setw(7) << std::fixed << std::setprecision(5) << error << std::endl << std::endl;
+	//// Calculate error
+	//error = meanSquaredError(tmp, trainingSetsOutputs);
+	//std::cout << std::setw(7) << std::fixed << std::setprecision(5) << error << std::endl << std::endl;
 
 	do
 	{
@@ -40,28 +40,40 @@ void nn::NeuralNetwork::learn(const std::vector<std::vector<float> > &trainingSe
 		// Back propagate
 		for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
 		{
+			//std::cout << "generateOutput()" << std::endl;
+			outputs.push_back(generateOutput(trainingSetsInputs[trainingSet]));
+			//print();
+			//std::cout << "calculateGradients()" << std::endl;
 			calculateGradients(trainingSetsOutputs[trainingSet]);
+			//print();
+			//std::cout << "updateWeights()" << std::endl;
 			updateWeights();
+			//print();
 		}
 
 		// Calculate network output
-		for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
-			outputs.push_back(generateOutput(trainingSetsInputs[trainingSet]));
+		//for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
+		//	outputs.push_back(generateOutput(trainingSetsInputs[trainingSet]));
 
-		print();
+		//print();
+
+		for (unsigned int trainingSet = 0; trainingSet < trainingSetsInputs.size(); trainingSet++)
+			for (int i = 0; i < outputs[trainingSet].size(); i++)
+				std::cout << std::setw(7) << std::fixed << std::setprecision(5) << outputs[trainingSet][i] << " ";
+		std::cout << std::endl << std::endl;
 
 		// Calculate error
 		error = meanSquaredError(outputs, trainingSetsOutputs);
 		std::cout << std::setw(7) << std::fixed << std::setprecision(5) << error << std::endl << std::endl;
 		if (error <= MIN_ACCEPTABLE_ERROR)
 		{
-			std::cout << "FINISHED" << std::endl << std::endl;
+			std::cout << "FINISHED" << " i = " << iteration << std::endl << std::endl;
 			break;
 		}
 
 		//getchar();
 	} 
-	while (++iteration < 10);
+	while (++iteration < 1000);
 }
 
 void nn::NeuralNetwork::recognize(const std::vector<float> realCase)

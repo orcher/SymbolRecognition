@@ -4,12 +4,13 @@
 #include <iomanip> 
 
 #define MOBILITY_FACTOR 0.0001f
-#define LEARNING_FACTOR 0.25f
+#define LEARNING_FACTOR 0.35f
 
 nn::Neuron::Neuron(int inputSize)
 {
 	_inputs = std::vector<float>(inputSize, 0.0f);
-	_weights = std::vector<float>(inputSize, randomFloat(0.0f, 1.0f));
+	for (int i = 0; i < inputSize; i++)
+		_weights.push_back(randomFloat(0.0f, 1.0f));
 	_prevWeights = _weights;
 
 	_activFun = ActivationFunction::SIGMOID;
@@ -75,7 +76,7 @@ void nn::Neuron::updateWeights()
 	{
 		float tmp = _prevWeights[weight];
 		_prevWeights[weight] = _weights[weight];
-		_weights[weight] -= MOBILITY_FACTOR * tmp + LEARNING_FACTOR * _gradient * _inputs[weight];
+		_weights[weight] += MOBILITY_FACTOR * tmp + LEARNING_FACTOR * _gradient * _inputs[weight];
 	}
 }
 
