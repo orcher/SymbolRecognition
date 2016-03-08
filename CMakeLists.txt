@@ -10,13 +10,11 @@ include_directories(
 	)
 
 set (HEADERS
-	include/neuron.hpp
 	include/neuralnetwork.hpp
 	)
 
 set (SOURCES
 	source/main.cpp
-	source/neuron.cpp
 	source/neuralnetwork.cpp
 	)
 
