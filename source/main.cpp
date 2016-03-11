@@ -1,9 +1,17 @@
 #include "neuralnetwork.hpp"
 
+#include <QApplication>
+#include <QQmlApplicationEngine>
+#include <qqmlcontext.h>
+#include <QQuickView>
+#include <QFile>
+#include <QTextStream>
+
 #include <vector>
 #include <ctime>
+#include <iostream>
 
-void main()
+int main(int argc, char *argv[])
 {
 	srand((unsigned int)time(NULL));
 
@@ -27,9 +35,27 @@ void main()
 	std::vector<float> realCase = { 4, 2 };
 
 	std::vector<unsigned int> layersSizes = { 2, 10, 1 };
-	nn::NeuralNetwork net(layersSizes);
-	net.learn(trainingSetsInputs, trainingSetsOutputs);
-	net.recognize(realCase);
 
-	getchar();
+	QApplication a(argc, argv);
+
+	QQmlApplicationEngine engine;
+
+	nn::NeuralNetwork net(layersSizes);
+
+	engine.load(QUrl("qrc:/QML/main.qml"));
+	engine.rootContext()->setContextProperty("net", &net);
+	//net.recognize(realCase);
+
+	net.learn(trainingSetsInputs, trainingSetsOutputs);
+
+	return a.exec();
 }
+
+#ifdef WIN32
+#include <Windows.h>
+
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	return main(__argc, __argv);
+}
+#endif

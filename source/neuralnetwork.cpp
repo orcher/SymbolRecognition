@@ -66,10 +66,10 @@ float nn::NeuralNetwork::Neuron::activationFunctionPrim(float x) const
 		return x * (1.0f - x);
 		break;
 	case ActivationFunction::TANH:
-		return 1 - powf(x, 2.0f);
+		return 1.0f - powf(x, 2.0f);
 		break;
 	case ActivationFunction::LINEAR:
-		return 1;
+		return 1.0f;
 		break;
 	default:
 		return x * (1.0f - x);
@@ -101,6 +101,8 @@ float nn::NeuralNetwork::Neuron::randomFloat(float min, float max)
 
 nn::NeuralNetwork::NeuralNetwork(const std::vector<unsigned int> &netDimms)
 {
+	_error = "0.00";
+
 	if (netDimms.empty())
 	{
 		std::cout << "Invaild network dimmensions data!" << std::endl;
@@ -161,12 +163,15 @@ void nn::NeuralNetwork::learn(const std::vector<std::vector<float> > &trainingSe
 
 		// Calculate error
 		error = meanSquaredError(outputs, trainingSetsOutputs);
+		_error = QString::number(error);
+		emit errorChanged();
 		std::cout << std::setw(7) << std::fixed << std::setprecision(5) << error << std::endl << std::endl;
 		if (error <= MIN_ACCEPTABLE_ERROR)
 		{
 			std::cout << "FINISHED" << " i = " << iteration << std::endl << std::endl;
 			break;
 		}
+		_sleep(10);
 	} 
 	while (++iteration < MAX_LEARN_ITERATIONS);
 }

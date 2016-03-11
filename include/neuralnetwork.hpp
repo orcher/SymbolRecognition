@@ -1,13 +1,18 @@
 #ifndef NEURALNETWORK_H
 #define NEURALNETWORK_H
 
+#include <QObject>
+
 #include <vector>
 
 namespace nn
 {
 
-class NeuralNetwork
+class NeuralNetwork : public QObject
 {
+
+		Q_OBJECT
+		Q_PROPERTY(QString error READ error NOTIFY errorChanged)
 
 	enum class ActivationFunction
 	{
@@ -38,17 +43,22 @@ public:
 	NeuralNetwork(const std::vector<unsigned int> &netDimms);
 	void learn(const std::vector<std::vector<float> > &inputs, const std::vector<std::vector<float> > &outputs);
 	void recognize(const std::vector<float> realCase);
+	QString error() { return _error; }
 
 protected:
 	std::vector<std::vector<Neuron*> > _network;
 	unsigned int _inputSize;
 	unsigned int _outputSize;
-	
+	QString _error;
+
 	std::vector<float> generateOutput(const std::vector<float> &inputs);
 	float meanSquaredError(const std::vector<std::vector<float> > &outputs, const std::vector<std::vector<float> > &expOutputs);
 	float crossEntropyError(const std::vector<std::vector<float> > &outputs, const std::vector<std::vector<float> > &expOutputs);
 	void backPropagate(const std::vector<float> &expOutputs);
 	void print();
+
+signals:
+	void errorChanged();
 };
 
 } // NN
